@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iterative To-Do List | Modern Task Management</title>
+  <meta name="description" content="A modern, responsive, and full-featured task management web application built with vanilla JavaScript, HTML5, and CSS3.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Chart.js for Dashboard Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Main Application Container -->
+  <div class="app-container">
+
+    <!-- Mobile Drawer Backdrop -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- Collapsible Sidebar -->
+    <aside class="sidebar" id="app-sidebar" aria-label="Sidebar Navigation">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-icon">
+            <i data-lucide="layers" style="width: 18px; height: 18px;"></i>
+          </div>
+          <span class="brand-name">Iterative</span>
+        </div>
+        <button type="button" class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
+          <i data-lucide="panel-left-close" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-content">
+        <!-- Main Views Navigation -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Views</div>
+          <a class="nav-item active" data-nav="dashboard">
+            <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
+            <span class="nav-label">Dashboard</span>
+          </a>
+          <a class="nav-item" data-nav="all">
+            <span class="nav-icon"><i data-lucide="check-square"></i></span>
+            <span class="nav-label">All Tasks</span>
+            <span class="nav-badge" id="badge-all-tasks">0</span>
+          </a>
+          <a class="nav-item" data-nav="today">
+            <span class="nav-icon"><i data-lucide="sun"></i></span>
+            <span class="nav-label">My Day</span>
+            <span class="nav-badge" id="badge-my-day">0</span>
+          </a>
+          <a class="nav-item" data-nav="upcoming">
+            <span class="nav-icon"><i data-lucide="calendar-days"></i></span>
+            <span class="nav-label">Upcoming</span>
+            <span class="nav-badge" id="badge-upcoming">0</span>
+          </a>
+          <a class="nav-item" data-nav="important">
+            <span class="nav-icon"><i data-lucide="star"></i></span>
+            <span class="nav-label">Important</span>
+            <span class="nav-badge" id="badge-important">0</span>
+          </a>
+          <a class="nav-item" data-nav="completed">
+            <span class="nav-icon"><i data-lucide="check-circle-2"></i></span>
+            <span class="nav-label">Completed</span>
+            <span class="nav-badge" id="badge-completed">0</span>
+          </a>
+          <a class="nav-item" data-nav="overdue">
+            <span class="nav-icon"><i data-lucide="alert-triangle"></i></span>
+            <span class="nav-label">Overdue</span>
+            <span class="nav-badge" id="badge-overdue" style="background-color: var(--priority-high-bg); color: var(--priority-high);">0</span>
+          </a>
+          <a class="nav-item" data-nav="calendar">
+            <span class="nav-icon"><i data-lucide="calendar"></i></span>
+            <span class="nav-label">Calendar</span>
+          </a>
+        </div>
+
+        <!-- Custom Categories Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">
+            <span>Categories</span>
+            <button type="button" class="cat-action-btn btn-add-category-inline" id="btn-add-category-inline" title="Add New Category">
+              <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+            </button>
+          </div>
+          <ul id="sidebar-categories-list" style="display: flex; flex-direction: column; gap: 0.15rem;">
+            <!-- Populated dynamically via CategoryManager -->
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Sidebar Bottom Controls -->
+      <div class="sidebar-footer">
+        <a class="nav-item" id="sidebar-shortcuts-btn" title="Keyboard Shortcuts (?)">
+          <span class="nav-icon"><i data-lucide="keyboard"></i></span>
+          <span class="nav-label">Shortcuts</span>
+          <span class="kbd-hint">?</span>
+        </a>
+        <a class="nav-item" data-nav="settings">
+          <span class="nav-icon"><i data-lucide="settings"></i></span>
+          <span class="nav-label">Settings</span>
+        </a>
+        <button type="button" class="nav-item" id="sidebar-theme-toggle-btn" style="width: 100%; text-align: left;">
+          <span class="nav-icon"><i data-lucide="moon" id="theme-toggle-icon"></i></span>
+          <span class="nav-label" id="theme-toggle-label">Dark Mode</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Navigation">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="header-title-wrapper">
+            <h1 class="view-title" id="header-view-title">Dashboard Overview</h1>
+            <span class="current-date" id="header-current-date">Today</span>
+          </div>
+        </div>
+
+        <!-- Global Search Bar -->
+        <div class="header-center">
+          <div class="search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="global-search-input" class="search-input" placeholder="Search tasks by title or description... (Press /)">
+            <button type="button" id="search-clear-btn" class="search-clear-btn" aria-label="Clear Search">
+              <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-right">
+          <!-- Notification Bell -->
+          <button type="button" class="icon-btn" id="notification-bell-btn" title="Notifications" aria-label="Notifications">
+            <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+            <span class="badge-dot" id="notification-badge" style="display: none;"></span>
+          </button>
+
+          <!-- Notification Dropdown Panel -->
+          <div class="notification-dropdown" id="notification-dropdown">
+            <div class="notification-header">
+              <span class="notification-header-title">Notifications</span>
+              <div class="notification-header-actions">
+                <button type="button" class="notification-link-btn" id="mark-all-read-btn">Mark read</button>
+                <button type="button" class="notification-link-btn" id="clear-notifications-btn">Clear</button>
+              </div>
+            </div>
+            <div class="notification-list" id="notification-list">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Add Task Primary Button -->
+          <button type="button" class="btn-primary" id="btn-header-add-task">
+            <i data-lucide="plus" style="width: 17px; height: 17px;"></i>
+            <span class="btn-text">Add Task</span>
+            <span class="kbd-badge">N</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Content -->
+      <main class="content-container">
+
+        <!-- Universal Quick Add Task Component -->
+        <div class="quick-add-container" id="tasks-quick-add">
+          <div class="quick-add-icon">
+            <i data-lucide="plus-circle" style="width: 20px; height: 20px;"></i>
+          </div>
+          <input type="text" class="quick-add-input" placeholder="Quick add a task and press Enter... (e.g. Implement user login API)">
+          <div class="quick-add-hint">
+            <span class="kbd-hint">↵ Enter</span> to save
+          </div>
+        </div>
+
+        <!-- ================= VIEW 1: DASHBOARD ================= -->
+        <section class="view-section active" id="view-dashboard">
+          <div class="dashboard-grid">
+
+            <!-- Progress Banner Card -->
+            <div class="progress-card">
+              <div class="progress-info">
+                <div class="progress-title">Overall Task Completion</div>
+                <div class="progress-desc">Keep up the momentum and clear remaining pending deliverables.</div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="dashboard-progress-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <div class="progress-percentage" id="dashboard-completion-pct">0%</div>
+            </div>
+
+            <!-- 4 Statistic Cards (Clickable) -->
+            <div class="stats-cards-grid">
+              <div class="stat-card total" onclick="App.navigateTo('all')" style="cursor: pointer;" title="View all tasks">
+                <div class="stat-card-header">
+                  <span class="stat-label">Total Tasks</span>
+                  <div class="stat-icon-wrapper"><i data-lucide="layers" style="width: 18px; height: 18px;"></i></div>
+                </div>
+                <div class="stat-value" id="stat-total-tasks">0</div>
+                <div class="stat-footer">
+                  <i data-lucide="info" style="width: 14px; height: 14px;"></i> All tracked items →
+                </div>
+              </div>
+
+              <div class="stat-card completed" onclick="App.navigateTo('completed')" style="cursor: pointer;" title="View completed tasks">
+                <div class="stat-card-header">
+                  <span class="stat-label">Completed Tasks</span>
+                  <div class="stat-icon-wrapper"><i data-lucide="check-circle" style="width: 18px; height: 18px;"></i></div>
+                </div>
+                <div class="stat-value" id="stat-completed-tasks">0</div>
+                <div class="stat-footer">
+                  <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i> Finished goals →
+                </div>
+              </div>
+
+              <div class="stat-card pending" onclick="App.navigateTo('all')" style="cursor: pointer;" title="View pending tasks">
+                <div class="stat-card-header">
+                  <span class="stat-label">Pending Tasks</span>
+                  <div class="stat-icon-wrapper"><i data-lucide="clock" style="width: 18px; height: 18px;"></i></div>
+                </div>
+                <div class="stat-value" id="stat-pending-tasks">0</div>
+                <div class="stat-footer">
+                  <i data-lucide="hourglass" style="width: 14px; height: 14px;"></i> In progress & To Do →
+                </div>
+              </div>
+
+              <div class="stat-card overdue" onclick="App.navigateTo('overdue')" style="cursor: pointer;" title="View overdue tasks">
+                <div class="stat-card-header">
+                  <span class="stat-label">Overdue Tasks</span>
+                  <div class="stat-icon-wrapper"><i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i></div>
+                </div>
+                <div class="stat-value" id="stat-overdue-tasks">0</div>
+                <div class="stat-footer">
+                  <i data-lucide="calendar-x" style="width: 14px; height: 14px;"></i> Requires attention →
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+              <!-- Weekly Productivity Chart -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div>
+                    <h2 class="chart-title">Weekly Productivity</h2>
+                    <span class="chart-subtitle">Tasks completed vs created over the past 7 days</span>
+                  </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                  <canvas id="weeklyProductivityChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Task Distribution Doughnut Chart -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div>
+                    <h2 class="chart-title">Task Distribution</h2>
+                    <span class="chart-subtitle">Breakdown by categories</span>
+                  </div>
+                </div>
+                <div class="chart-canvas-wrapper">
+                  <canvas id="taskDistributionChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lists Grid: Recent Tasks & Upcoming Deadlines -->
+            <div class="dashboard-lists-grid">
+              <!-- Recent Tasks -->
+              <div class="widget-card">
+                <div class="widget-card-header">
+                  <div class="widget-card-title">
+                    <i data-lucide="clock" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                    Recent Tasks
+                  </div>
+                </div>
+                <div class="widget-list" id="dashboard-recent-tasks-list">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+
+              <!-- Upcoming Deadlines -->
+              <div class="widget-card">
+                <div class="widget-card-header">
+                  <div class="widget-card-title">
+                    <i data-lucide="calendar-alert" style="width: 16px; height: 16px; color: var(--priority-medium);"></i>
+                    Upcoming Deadlines
+                  </div>
+                </div>
+                <div class="widget-list" id="dashboard-upcoming-deadlines-list">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ================= VIEW 2: TASK MANAGEMENT (LIST / GRID / KANBAN) ================= -->
+        <section class="view-section" id="view-tasks">
+
+          <!-- Task Toolbar (Controls, Filters, Sort, View Modes) -->
+          <div class="tasks-toolbar">
+            <div class="toolbar-left">
+              <!-- Priority Filter -->
+              <div class="select-wrapper">
+                <select class="toolbar-select" id="filter-priority-select">
+                  <option value="all">All Priorities</option>
+                  <option value="high">High Priority</option>
+                  <option value="medium">Medium Priority</option>
+                  <option value="low">Low Priority</option>
+                </select>
+                <i data-lucide="chevron-down" class="select-arrow"></i>
+              </div>
+
+              <!-- Status Filter -->
+              <div class="select-wrapper">
+                <select class="toolbar-select" id="filter-status-select">
+                  <option value="all">All Statuses</option>
+                  <option value="todo">To Do</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+                <i data-lucide="chevron-down" class="select-arrow"></i>
+              </div>
+
+              <!-- Category Filter -->
+              <div class="select-wrapper">
+                <select class="toolbar-select" id="filter-category-select">
+                  <!-- Populated dynamically -->
+                </select>
+                <i data-lucide="chevron-down" class="select-arrow"></i>
+              </div>
+            </div>
+
+            <div class="toolbar-right">
+              <!-- Sort By Dropdown -->
+              <div class="select-wrapper">
+                <select class="toolbar-select" id="sort-tasks-select">
+                  <option value="newest">Sort: Newest First</option>
+                  <option value="oldest">Sort: Oldest First</option>
+                  <option value="dueDate-asc">Sort: Due Date (Earliest)</option>
+                  <option value="dueDate-desc">Sort: Due Date (Latest)</option>
+                  <option value="priority-desc">Sort: Priority (High to Low)</option>
+                  <option value="priority-asc">Sort: Priority (Low to High)</option>
+                  <option value="alpha-asc">Sort: Alphabetical (A-Z)</option>
+                </select>
+                <i data-lucide="chevron-down" class="select-arrow"></i>
+              </div>
+
+              <!-- View Switcher (List, Grid, Kanban) -->
+              <div class="view-switcher">
+                <button type="button" class="view-btn active" id="view-list-btn" title="List View">
+                  <i data-lucide="list" style="width: 16px; height: 16px;"></i>
+                </button>
+                <button type="button" class="view-btn" id="view-grid-btn" title="Grid View">
+                  <i data-lucide="layout-grid" style="width: 16px; height: 16px;"></i>
+                </button>
+                <button type="button" class="view-btn" id="view-kanban-btn" title="Kanban Board View">
+                  <i data-lucide="kanban" style="width: 16px; height: 16px;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bulk Actions Bar -->
+          <div class="bulk-bar" id="tasks-bulk-bar">
+            <div class="bulk-info">
+              <i data-lucide="check-square" style="width: 18px; height: 18px;"></i>
+              <span id="bulk-selected-count">0 tasks selected</span>
+            </div>
+            <div class="bulk-actions">
+              <button type="button" class="btn-secondary" id="bulk-complete-btn">
+                <i data-lucide="check" style="width: 14px; height: 14px;"></i> Mark Completed
+              </button>
+              <button type="button" class="btn-danger-outline" id="bulk-delete-btn">
+                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete Selected
+              </button>
+              <button type="button" class="btn-secondary" id="bulk-clear-btn">
+                Deselect
+              </button>
+            </div>
+          </div>
+
+          <!-- 3 Display Modes Container Targets -->
+          <div id="tasks-list-container" class="tasks-list-container"></div>
+          <div id="tasks-grid-container" class="tasks-grid-container" style="display: none;"></div>
+          <div id="tasks-kanban-container" class="kanban-container" style="display: none;"></div>
+        </section>
+
+        <!-- ================= VIEW 3: CALENDAR ================= -->
+        <section class="view-section" id="view-calendar">
+          <div class="calendar-view-container">
+            <!-- Calendar Navigation Header -->
+            <div class="calendar-header">
+              <div class="calendar-nav">
+                <button type="button" class="btn-secondary" id="calendar-prev-btn" aria-label="Previous">
+                  <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+                </button>
+                <button type="button" class="btn-secondary" id="calendar-today-btn">Today</button>
+                <button type="button" class="btn-secondary" id="calendar-next-btn" aria-label="Next">
+                  <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                </button>
+                <h2 class="calendar-current-label" id="calendar-current-title">Month Year</h2>
+              </div>
+
+              <!-- View Mode Toggles (Month, Week, Day) -->
+              <div class="calendar-mode-toggle">
+                <button type="button" class="calendar-mode-btn active" id="cal-mode-month">Month</button>
+                <button type="button" class="calendar-mode-btn" id="cal-mode-week">Week</button>
+                <button type="button" class="calendar-mode-btn" id="cal-mode-day">Day</button>
+              </div>
+            </div>
+
+            <!-- Calendar Render Target -->
+            <div id="calendar-render-target"></div>
+          </div>
+        </section>
+
+        <!-- ================= VIEW 4: SETTINGS ================= -->
+        <section class="view-section" id="view-settings">
+          <div class="settings-container">
+
+            <!-- Appearance Settings -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <h3 class="settings-card-title">Appearance & Theme</h3>
+                <span class="settings-card-desc">Customize interface theme and visual preferences</span>
+              </div>
+              <div class="settings-row">
+                <div class="settings-row-label">
+                  <span class="settings-row-title">Color Theme</span>
+                  <span class="settings-row-desc">Select Light, Dark, or follow system appearance</span>
+                </div>
+                <div class="select-wrapper">
+                  <select class="toolbar-select" id="settings-theme-select">
+                    <option value="light">Light Theme</option>
+                    <option value="dark">Dark Theme</option>
+                    <option value="system">System Preference</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="select-arrow"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Task Defaults -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <h3 class="settings-card-title">Task Defaults</h3>
+                <span class="settings-card-desc">Configure sensible defaults for quick task creation</span>
+              </div>
+              <div class="settings-row">
+                <div class="settings-row-label">
+                  <span class="settings-row-title">Default Priority</span>
+                  <span class="settings-row-desc">Initial priority for newly created tasks</span>
+                </div>
+                <div class="select-wrapper">
+                  <select class="toolbar-select" id="settings-default-priority">
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="select-arrow"></i>
+                </div>
+              </div>
+
+              <div class="settings-row">
+                <div class="settings-row-label">
+                  <span class="settings-row-title">Default Task View</span>
+                  <span class="settings-row-desc">Preferred view layout when opening task views</span>
+                </div>
+                <div class="select-wrapper">
+                  <select class="toolbar-select" id="settings-default-view">
+                    <option value="list">List View</option>
+                    <option value="grid">Grid View</option>
+                    <option value="kanban">Kanban Board</option>
+                  </select>
+                  <i data-lucide="chevron-down" class="select-arrow"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notifications Preferences -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <h3 class="settings-card-title">Notification Settings</h3>
+                <span class="settings-card-desc">Manage desktop alerts and task reminder triggers</span>
+              </div>
+              <div class="settings-row">
+                <div class="settings-row-label">
+                  <span class="settings-row-title">Browser Desktop Notifications</span>
+                  <span class="settings-row-desc">Display desktop alerts for approaching deadlines and reminders</span>
+                </div>
+                <label class="switch-label">
+                  <input type="checkbox" id="settings-browser-notifs" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                </label>
+              </div>
+              <div class="settings-row" style="border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
+                <div class="settings-row-label">
+                  <span class="settings-row-title">Task Completion Chime</span>
+                  <span class="settings-row-desc">Play subtle audio harmonic chime when completing tasks</span>
+                </div>
+                <label class="switch-label">
+                  <input type="checkbox" id="settings-sound-toggle" checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                </label>
+              </div>
+            </div>
+
+            <!-- Data Management (Import / Export / Clear) -->
+            <div class="settings-card">
+              <div class="settings-card-header">
+                <h3 class="settings-card-title">Data Management & Backup</h3>
+                <span class="settings-card-desc">Export or restore all tasks and categories stored in LocalStorage</span>
+              </div>
+
+              <div class="settings-row">
+                <div class="settings-row-label">
+                  <span class="settings-row-title">Export Backup JSON</span>
+                  <span class="settings-row-desc">Download a complete snapshot of all tasks, categories, and settings</span>
+                </div>
+                <button type="button" class="btn-secondary" id="btn-export-data">
+                  <i data-lucide="download" style="width: 15px; height: 15px;"></i> Export JSON
+                </button>
+              </div>
+
+              <div class="settings-row">
+                <div class="settings-row-label">
+                  <span class="settings-row-title">Import Backup JSON</span>
+                  <span class="settings-row-desc">Restore tasks and categories from an existing backup JSON file</span>
+                </div>
+                <button type="button" class="btn-secondary" id="btn-import-data">
+                  <i data-lucide="upload" style="width: 15px; height: 15px;"></i> Import JSON
+                </button>
+                <input type="file" id="settings-import-file-input" accept=".json" style="display: none;">
+              </div>
+
+              <div class="settings-row" style="border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+                <div class="settings-row-label">
+                  <span class="settings-row-title" style="color: var(--priority-high);">Clear All Application Data</span>
+                  <span class="settings-row-desc">Erase all tasks, categories, and custom settings permanently</span>
+                </div>
+                <button type="button" class="btn-danger-outline" id="btn-clear-all-data">
+                  <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i> Reset All Data
+                </button>
+              </div>
+            </div>
+
+            <!-- Portfolio Application Information -->
+            <div class="settings-card" style="background-color: var(--bg-surface-hover);">
+              <div class="settings-card-header">
+                <h3 class="settings-card-title">About Iterative To-Do List</h3>
+                <span class="settings-card-desc">Software Engineering Portfolio Project</span>
+              </div>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                Built with <strong>HTML5</strong>, <strong>CSS3</strong>, and modern <strong>Vanilla JavaScript (ES6+)</strong> using LocalStorage for persistent client-side data management. Designed with architectural inspiration from Notion, Todoist, and Linear.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ================= MODALS & OVERLAYS ================= -->
+
+  <!-- 1. TASK MODAL (Create & Edit) -->
+  <div class="modal-backdrop" id="task-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="task-modal-title">Create New Task</h3>
+        <button type="button" class="modal-close-btn" id="task-modal-close" aria-label="Close">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+
+      <form id="task-form">
+        <div class="modal-body">
+          <!-- Title Field (Required) -->
+          <div class="form-group">
+            <label class="form-label required" for="task-form-title">Task Title</label>
+            <input type="text" id="task-form-title" class="form-input" placeholder="e.g. Implement REST API unit tests" required>
+            <div class="form-error" id="task-form-title-error">Task title is required.</div>
+          </div>
+
+          <!-- Description Field -->
+          <div class="form-group">
+            <label class="form-label" for="task-form-desc">Description</label>
+            <textarea id="task-form-desc" class="form-textarea" placeholder="Add additional details, notes, or acceptance criteria..."></textarea>
+          </div>
+
+          <!-- Dates Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="task-form-start-date">Start Date</label>
+              <input type="date" id="task-form-start-date" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="task-form-due-date">Due Date</label>
+              <input type="date" id="task-form-due-date" class="form-input">
+            </div>
+          </div>
+
+          <!-- Priority & Category Row -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Priority</label>
+              <div class="priority-toggle-group">
+                <button type="button" class="priority-toggle-btn" data-priority="low">Low</button>
+                <button type="button" class="priority-toggle-btn active" data-priority="medium">Medium</button>
+                <button type="button" class="priority-toggle-btn" data-priority="high">High</button>
+              </div>
+              <input type="hidden" id="task-form-priority-input" value="medium">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="task-form-category">Category</label>
+              <select id="task-form-category" class="form-select">
+                <!-- Populated dynamically via CategoryManager -->
+              </select>
+            </div>
+          </div>
+
+          <!-- Status & Important Flag -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="task-form-status">Initial Status</label>
+              <select id="task-form-status" class="form-select">
+                <option value="todo">To Do</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="justify-content: flex-end; padding-bottom: 0.25rem;">
+              <label class="switch-label" style="margin-top: 1rem;">
+                <span>Mark as Important</span>
+                <input type="checkbox" id="task-form-important" style="width: 18px; height: 18px; accent-color: #fbbf24;">
+              </label>
+            </div>
+          </div>
+
+          <!-- Recurring Task Settings -->
+          <div class="collapsible-box">
+            <div class="form-row" style="align-items: center;">
+              <div class="form-group" style="flex: 1;">
+                <label class="form-label" for="task-form-recurrence-type">
+                  <i data-lucide="repeat" style="width: 13px; height: 13px; display: inline;"></i> Recurrence
+                </label>
+                <select id="task-form-recurrence-type" class="form-select">
+                  <option value="none">No Recurrence</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="recurrence-interval-row" style="display: none; flex: 1;">
+                <label class="form-label" for="task-form-recurrence-interval">Repeat Every</label>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="number" id="task-form-recurrence-interval" class="form-input" min="1" max="99" value="1">
+                  <span style="font-size: 0.8rem; color: var(--text-secondary);">interval(s)</span>
+                </div>
+              </div>
+            </div>
+            <p style="font-size: 0.74rem; color: var(--text-tertiary);">
+              Complete-based recurrence: marking this task completed will automatically schedule its next occurrence!
+            </p>
+          </div>
+
+          <!-- Reminder Settings -->
+          <div class="collapsible-box">
+            <label class="switch-label">
+              <span><i data-lucide="bell" style="width: 13px; height: 13px; display: inline;"></i> Set Reminder</span>
+              <input type="checkbox" id="task-form-reminder-toggle" style="width: 18px; height: 18px; accent-color: var(--primary);">
+            </label>
+            <div id="reminder-time-box" style="display: none; margin-top: 0.5rem;">
+              <label class="form-label" for="task-form-reminder-time">Reminder Time (on Due Date)</label>
+              <input type="time" id="task-form-reminder-time" class="form-input" value="09:00">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="task-modal-cancel">Cancel</button>
+          <button type="submit" class="btn-primary" id="task-modal-save">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. CATEGORY MODAL (Create & Edit) -->
+  <div class="modal-backdrop" id="category-modal">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="category-modal-title">Create New Category</h3>
+        <button type="button" class="modal-close-btn" id="category-modal-close" aria-label="Close">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+
+      <form id="category-form">
+        <div class="modal-body">
+          <input type="hidden" id="category-id-hidden">
+
+          <div class="form-group">
+            <label class="form-label required" for="category-name-input">Category Name</label>
+            <input type="text" id="category-name-input" class="form-input" placeholder="e.g. Research & Labs" required>
+            <div class="form-error" id="category-form-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category Color</label>
+            <div id="category-color-swatches" style="display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.4rem 0;"></div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem;">
+              <span style="font-size: 0.8rem; color: var(--text-tertiary);">Custom:</span>
+              <input type="color" id="category-custom-color" value="#3b82f6" style="width: 32px; height: 32px; border: none; border-radius: 4px; cursor: pointer;">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" id="category-modal-cancel">Cancel</button>
+          <button type="submit" class="btn-primary">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. REUSABLE CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="confirm-modal">
+    <div class="modal-dialog confirm-dialog">
+      <div class="confirm-dialog-body">
+        <div class="confirm-icon-wrapper">
+          <i data-lucide="alert-triangle" style="width: 24px; height: 24px;"></i>
+        </div>
+        <h3 class="confirm-title" id="confirm-modal-title">Confirm Action</h3>
+        <p class="confirm-desc" id="confirm-modal-desc">Are you sure you want to proceed?</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button type="button" class="btn-secondary" id="confirm-modal-cancel">Cancel</button>
+        <button type="button" class="btn-primary" id="confirm-modal-ok">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. KEYBOARD SHORTCUTS CHEAT SHEET MODAL -->
+  <div class="modal-backdrop" id="shortcuts-modal">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Keyboard Shortcuts</h3>
+        <button type="button" class="modal-close-btn" id="shortcuts-modal-close" aria-label="Close">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Create New Task</span>
+            <span class="kbd-hint">N</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Focus Quick Add Bar</span>
+            <span class="kbd-hint">Q</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Focus Search Bar</span>
+            <span class="kbd-hint">/</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Close Open Modal / Dropdown</span>
+            <span class="kbd-hint">Esc</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Go to Dashboard</span>
+            <span class="kbd-hint">1</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Go to All Tasks</span>
+            <span class="kbd-hint">2</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid var(--border-subtle);">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Go to Calendar</span>
+            <span class="kbd-hint">3</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.35rem 0;">
+            <span style="font-size: 0.88rem; color: var(--text-primary);">Go to Settings</span>
+            <span class="kbd-hint">4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <!-- Application JavaScript Modules -->
+  <script src="js/storage.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/recurring.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
+
