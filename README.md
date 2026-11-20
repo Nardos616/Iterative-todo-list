@@ -1,181 +1,277 @@
-<p align="center">
-  <img src="assets/images/hero-banner.svg" alt="Iterative To-Do List Banner" width="100%" />
-</p>
+<div align="center">
 
-# ⚡ Iterative To-Do List
+<img src="assets/images/hero-banner.svg" alt="Iterative To-Do List Banner" width="100%"/>
 
-A modern, professional, and fully responsive productivity and task management web application built with **HTML5, CSS3, and Vanilla JavaScript (ES6+)**. Inspired by the streamlined UX of **Todoist**, **Notion**, and **Linear**, Iterative was designed for high efficiency, complete data privacy, and a seamless workflow.
+# Iterative To-Do List
 
-> **Note:** Iterative is a **100% frontend-only** web application that persists all state locally in the user's browser using the **Web Storage API (LocalStorage)**. No backend server, database, or external account is required.
+**A professional, feature-rich task management web application built with vanilla web technologies.**
+
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
+[![Lucide](https://img.shields.io/badge/Lucide_Icons-F56565?style=for-the-badge&logo=lucide&logoColor=white)](https://lucide.dev/)
+[![LocalStorage](https://img.shields.io/badge/LocalStorage-Persistent_Data-4CAF50?style=for-the-badge&logo=databricks&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+[![No Frameworks](https://img.shields.io/badge/No_Frameworks-Pure_Vanilla-orange?style=flat-square)]()
+
+</div>
 
 ---
 
-## 🌟 Key Features
+## 📋 Table of Contents
 
-### 1. 🔄 Complete-Based Recurring Tasks (Core Engine)
-- **Automatic Recurrence Calculation:** When a recurring task is marked as completed, the current occurrence is archived and the next occurrence is automatically scheduled.
-- **Smart Date Algorithms:** Supports **Daily**, **Weekly**, and **Monthly** schedules (gracefully handling varying month lengths and leap years), as well as custom intervals.
-- **Duplicate Prevention:** Tracks persistent series IDs to eliminate duplicate task generation.
+- [Overview](#-overview)
+- [Features](#-features)
+- [Tech Stack](#️-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Keyboard Shortcuts](#️-keyboard-shortcuts)
+- [Screenshots](#-screenshots)
+- [Roadmap](#️-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Author](#-author)
 
-### 2. 📊 Interactive Productivity Dashboard
-- **Live Metric Cards:** Real-time counters for Total Tasks, Completed Tasks, Pending Tasks, and Overdue Tasks.
-- **Visual Completion Meter:** Animated progress indicator displaying overall progress percentage.
-- **Weekly Productivity Chart:** Rendered with [Chart.js](https://www.chartjs.org/) to track completed vs. created tasks across the past 7 days.
-- **Category Distribution Chart:** Doughnut chart breaking down task allocation across custom categories.
-- **Upcoming Deadlines & Recent Activity:** Quick-access widgets for near-term milestones.
+---
 
-### 3. 🎯 Versatile Display Modes
-- **List View:** Dense, structured row format with inline status checkboxes, priority badges, category pills, and quick actions.
-- **Grid View:** Card layout highlighting descriptions, tags, and due dates.
-- **Kanban Board:** Three workflow stages (**To Do**, **In Progress**, **Completed**) featuring native HTML5 drag-and-drop to update statuses instantly.
+## 🌟 Overview
 
-### 4. 📅 Multi-View Task Calendar
-- **Three Views:** Monthly grid, Weekly columns, and Daily schedule.
-- **Date Navigation:** Jump seamlessly between months/weeks or quickly return to **Today**.
-- **Click-to-Create:** Click any calendar date to open the task creation dialog pre-filled with that date.
-- **Priority-Coded Pills:** Tasks are color-coded by priority (High, Medium, Low) directly on calendar cells.
+**Iterative To-Do List** is a productivity-focused task management application designed to demonstrate modern frontend engineering without relying on any JavaScript frameworks. It was built as a portfolio project inspired by the design quality and UX of tools like **Todoist**, **Notion**, and **Linear**.
 
-### 5. 🏷️ Custom Category Management
-- Pre-seeded with common project categories: *Work*, *Education*, *Programming*, *Projects*, and *Personal*.
-- Create, edit, and delete categories with a custom color picker and preset swatches.
-- Safe deletion ensures associated tasks revert to uncategorized without data loss.
+The app runs entirely in the browser — no backend, no database, no build step. All data persists locally via the **Web Storage API (LocalStorage)**.
 
-### 6. 🔍 Search, Filter, and Sort
-- **Real-Time Search:** Search dynamically across task titles and descriptions.
-- **Multi-Factor Filtering:** Filter by Priority, Status, Category, or smart views (*My Day*, *Upcoming*, *Important*, *Completed*, *Overdue*).
-- **Sorting Options:** Sort by Newest, Oldest, Due Date (Earliest/Latest), Priority (High to Low), or Alphabetically.
+> Built to showcase real-world frontend skills: component architecture, state management, event-driven programming, and responsive design — all in vanilla HTML, CSS, and JavaScript.
 
-### 7. ⚡ Bulk Operations & Undo System
-- Select individual tasks or multi-select entire filtered views.
-- Bulk complete and bulk delete with one click.
-- **Instant Undo:** Non-destructive deletion with an interactive toast notification allowing instant restoration of removed tasks.
+---
 
-### 8. 🔔 Notification Center & Reminders
-- In-app notification center with an unread badge counter.
-- Background ticker scans for approaching deadlines and reminders every 40 seconds.
-- Optional browser desktop notifications via the native **Web Notification API** (requests permission gracefully).
+## ✨ Features
 
-### 9. 🌓 Light & Dark Theme Support
-- Designed with CSS custom properties for instant theme switching.
-- Auto-adapts Chart.js grid and text contrast for dark mode.
-- System preference detection (`prefers-color-scheme`).
+### 🎨 UI / UX
+- **Light & Dark mode** with instant toggle and persistent preference
+- **Fully responsive** layout across desktop, tablet, and mobile
+- **Collapsible sidebar** that transforms into an off-canvas drawer on mobile
+- Smooth transitions, micro-interactions, and animated progress indicators
+- Consistent design system with CSS custom properties (design tokens)
 
-### 10. 💾 Backup & Data Portability
-- **Export Backup:** Download an export of tasks, categories, and settings as a clean JSON file (`iterative-todo-backup-YYYY-MM-DD.json`).
-- **Import Backup:** Restore data from any valid backup file with schema verification and confirmation prompts.
-- **Reset:** Wipe all local data and restore defaults.
+### ✅ Task Management
+- **Full CRUD** — create, read, update, and delete tasks
+- Rich task fields: title, description, start date, due date, priority, category, status, and importance flag
+- Priority levels: **High**, **Medium**, **Low** with color-coded visual indicators
+- Task statuses: **To Do**, **In Progress**, **Completed**
+- Mark tasks as **Important** for quick filtering
+
+### 🔁 Recurring Tasks
+- Schedule tasks to repeat **Daily**, **Weekly**, **Monthly**, or on a **Custom** interval
+- **Completion-based recurrence**: completing a recurring task automatically generates the next occurrence with the correct due date
+- Handles edge cases: month-end dates, leap years, and duplicate prevention
+- Pause or stop a recurring series at any time
+
+### 📅 Calendar
+- Three views: **Monthly**, **Weekly**, and **Daily**
+- Tasks rendered on their due dates with priority color coding
+- Navigate between periods with **Previous / Next** controls and a **Today** button
+- Click any calendar date to create a task with that due date pre-filled
+- Click any task on the calendar to open its full details
+
+### 📊 Dashboard & Analytics
+- Summary stat cards: **Total**, **Completed**, **Pending**, and **Overdue** tasks
+- Animated completion progress bar
+- **Weekly productivity chart** (Chart.js bar chart)
+- **Task distribution chart** (Chart.js doughnut chart)
+- Stat cards are clickable and navigate to the relevant filtered task view
+- All charts and stats update in real-time as tasks change
+
+### 🗂️ Task Views
+| View | Description |
+|------|-------------|
+| **List** | Compact, scannable row layout |
+| **Grid** | Card-based layout for a broader overview |
+| **Kanban** | Three-column board (To Do / In Progress / Completed) with **drag-and-drop** |
+
+### 🔍 Search, Filter & Sort
+- **Full-text search** across task titles and descriptions
+- Filter by: All, Completed, Pending, Overdue, Important, High / Medium / Low priority, or any Category
+- Sort by: Newest, Oldest, Due Date, Priority, or Alphabetical order
+- All three controls work together simultaneously
+
+### 📂 Category Management
+- Create, rename, color-pick, and delete custom categories
+- Assign tasks to categories and filter by them
+- Deleting a category does not delete its tasks (they become Uncategorized)
+- Pre-loaded default categories: Personal, Education, Work, Programming, Projects
+
+### ☑️ Bulk Operations
+- Multi-select tasks with checkboxes
+- Bulk-mark as completed or bulk-delete
+- **Undo deletion** via toast action (restores within a short window)
+
+### 🔔 Notifications & Reminders
+- In-app **toast notification** system (success, error, warning, info)
+- **Notification center** with an unread badge counter
+- **Browser push notifications** via the Web Notification API (permission requested once)
+- Task reminder alerts and overdue warnings
+- Optional **sound effects** for task completion (Web Audio API)
+
+### 💾 Data Management
+- **Export** all tasks and categories as a timestamped `.json` file
+- **Import** a previously exported file with structure validation and duplicate-safe merging
+- **Clear all data** with a confirmation dialog to prevent accidental loss
+- LocalStorage gracefully handles missing or corrupted data on startup
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| **HTML5** | Semantic markup and application shell |
+| **CSS3** | Design system, layout (Flexbox + CSS Grid), animations |
+| **Vanilla JavaScript (ES6+)** | Application logic, state management, DOM manipulation |
+| **[Chart.js](https://www.chartjs.org/) (CDN)** | Dashboard analytics charts |
+| **[Lucide Icons](https://lucide.dev/) (CDN)** | Icon set |
+| **Web Storage API (LocalStorage)** | Client-side persistent data storage |
+| **Web Notification API** | Browser push notifications |
+| **Web Audio API** | Completion sound effects |
+| **Drag and Drop API** | Kanban board drag-and-drop |
+
+---
+
+## 📁 Project Structure
+
+```
+iterative-todo-list/
+│
+├── index.html              # Application shell — all views and modals
+│
+├── css/
+│   ├── style.css           # Design tokens (CSS custom properties), base reset, layout
+│   ├── components.css      # All UI component styles (cards, modals, forms, badges, etc.)
+│   └── responsive.css      # Media queries and mobile-specific overrides
+│
+├── js/
+│   ├── storage.js          # LocalStorage CRUD abstraction layer
+│   ├── notifications.js    # Toast system, notification center, browser Notification API
+│   ├── categories.js       # Category CRUD and sidebar rendering
+│   ├── recurring.js        # Recurrence engine — next-occurrence calculation
+│   ├── tasks.js            # Task CRUD, List/Grid/Kanban renderers, drag-and-drop, bulk ops
+│   ├── dashboard.js        # Stat cards, Chart.js charts, progress bar
+│   ├── calendar.js         # Month/Week/Day calendar views
+│   ├── settings.js         # Theme management, settings form, data import/export
+│   └── app.js              # Application coordinator — navigation, keyboard shortcuts, init
+│
+├── assets/
+│   └── images/
+│       └── hero-banner.svg # Application banner
+│
+└── README.md
+```
+
+> **Architecture note:** Every JavaScript file is an **IIFE (Immediately Invoked Function Expression)** that exposes a minimal public API on the `window` object. This provides encapsulation without a build tool or module bundler, keeping the project framework-free and directly runnable in any browser.
+
+---
+
+## 🚀 Getting Started
+
+No installation, build step, or server required.
+
+### Option 1 — Open directly (simplest)
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/iterative-todo-list.git
+
+# Navigate into the directory
+cd iterative-todo-list
+
+# Open index.html in your browser
+# Windows:
+start index.html
+# macOS:
+open index.html
+# Linux:
+xdg-open index.html
+```
+
+### Option 2 — Live Server (recommended for development)
+
+If you use **VS Code**, install the [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer), right-click `index.html`, and select **"Open with Live Server"**.
+
+> **Note:** Browser notifications require a served context (`http://` or `https://`). Opening the file directly via `file://` will disable that feature; all other features work normally.
 
 ---
 
 ## ⌨️ Keyboard Shortcuts
 
 | Shortcut | Action |
-| :--- | :--- |
-| <kbd>N</kbd> | Open New Task modal |
-| <kbd>Q</kbd> | Focus Quick Add task bar |
-| <kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>K</kbd> | Focus global search bar |
-| <kbd>Esc</kbd> | Close any open modal or dropdown |
-| <kbd>1</kbd> | Navigate to Dashboard |
-| <kbd>2</kbd> | Navigate to All Tasks |
-| <kbd>3</kbd> | Navigate to Calendar |
-| <kbd>4</kbd> | Navigate to Settings |
-| <kbd>?</kbd> | Open Keyboard Shortcuts guide |
-
----
-
-## 🛠️ Technology Stack
-
-- **HTML5:** Semantic markup, dialogs, form elements, and accessible ARIA attributes.
-- **CSS3:** Modern CSS variables, Flexbox, CSS Grid layouts, glassmorphism backdrops, and responsive media queries.
-- **Vanilla JavaScript (ES6+):** Pure modular JavaScript, object-oriented service pattern, custom event dispatching, and zero frontend framework dependencies.
-- **Chart.js (v4 via CDN):** Responsive canvas rendering for analytical graphs.
-- **Lucide Icons (via CDN):** Clean and consistent vector iconography.
-- **LocalStorage API:** Client-side persistence and JSON data serialization.
-
----
-
-## 📁 Project Structure
-
-```text
-To-Do-list/
-├── index.html              # Main HTML entry point and application shell
-├── css/
-│   ├── style.css           # Design tokens, color system, global reset & layout architecture
-│   ├── components.css      # Component styles: modals, cards, kanban, calendar, toasts
-│   └── responsive.css      # Breakpoints and mobile drawer navigation
-├── js/
-│   ├── storage.js          # LocalStorage CRUD, data persistence, JSON export & import
-│   ├── notifications.js    # In-app notification center, toast system & web alerts
-│   ├── categories.js       # Category service, color swatches & select population
-│   ├── recurring.js        # Complete-based recurrence calculation engine
-│   ├── tasks.js            # Task CRUD, filters, sorting, bulk actions & kanban drag-and-drop
-│   ├── dashboard.js        # Statistics calculation and Chart.js instances
-│   ├── calendar.js         # Month, week, and day calendar renderers
-│   ├── settings.js         # Preferences, theme toggles, and data controls
-│   └── app.js             # Application coordinator, navigation routing & keyboard shortcuts
-├── assets/
-│   └── images/             # Project assets and screenshot storage
-└── README.md               # Portfolio documentation
-```
-
----
-
-## 🚀 Getting Started
-
-Because **Iterative** is built exclusively with standard Web standards (HTML5, CSS3, and ES6+ JavaScript), no package manager, compiler, or build step is required!
-
-### Method 1: Direct File Launch
-1. Download or clone this repository:
-   ```bash
-   git clone https://github.com/your-username/iterative-todo-list.git
-   ```
-2. Navigate into the project folder:
-   ```bash
-   cd iterative-todo-list
-   ```
-3. Double-click `index.html` to open it in your browser (Chrome, Firefox, Safari, Edge, or Brave).
-
-### Method 2: Local Static Server (Recommended)
-You can also serve the project with any local HTTP server:
-
-Using Python:
-```bash
-python -m http.server 8080
-```
-Then visit `http://localhost:8080` in your browser.
-
-Using Node.js:
-```bash
-npx serve .
-```
+|----------|--------|
+| `N` | Open "New Task" modal |
+| `Escape` | Close any open modal or dialog |
+| `Ctrl + F` | Focus the search bar |
+| `D` | Navigate to Dashboard |
+| `T` | Navigate to All Tasks |
+| `C` | Navigate to Calendar |
+| `Enter` | Submit Quick Add task |
 
 ---
 
 ## 📸 Screenshots
 
-*(Add screenshots of your application here before uploading to your GitHub portfolio)*
+> _Screenshots coming soon. Run the app locally to see it in action!_
 
-| Light Mode Dashboard | Dark Mode Kanban Board |
-| :---: | :---: |
-| ![Light Mode Dashboard](assets/images/screenshot-dashboard-light.png) | ![Dark Mode Kanban](assets/images/screenshot-kanban-dark.png) |
-
-| Interactive Calendar | Task Creation Modal |
-| :---: | :---: |
-| ![Calendar View](assets/images/screenshot-calendar.png) | ![Task Modal](assets/images/screenshot-modal.png) |
+| Dashboard | Task Board | Calendar |
+|-----------|-----------|----------|
+| _Add screenshot_ | _Add screenshot_ | _Add screenshot_ |
 
 ---
 
-## 🔮 Future Enhancements
+## 🗺️ Roadmap
 
-- [ ] Subtasks and hierarchical task trees.
-- [ ] Tagging system for multi-dimensional filtering.
-- [ ] Markdown and rich-text support inside task descriptions.
-- [ ] Export tasks directly to CSV / Excel spreadsheet formats.
-- [ ] Web Share API integration to export individual task summaries.
+Planned enhancements for future iterations:
+
+- [ ] **Pomodoro Timer** — integrated focus sessions linked to tasks
+- [ ] **Subtasks** — hierarchical task breakdown with individual completion tracking
+- [ ] **Tags** — freeform, multi-value tagging alongside categories
+- [ ] **PWA support** — offline capability and "Add to Home Screen" on mobile
+- [ ] **Cloud sync** — optional sync via a lightweight backend (e.g., Firebase)
+- [ ] **Shareable task links** — export a read-only task view as a URL
+- [ ] **Accessibility (WCAG 2.1 AA)** — full keyboard navigation and screen reader support
+- [ ] **Internationalization (i18n)** — multi-language support
+
+---
+
+## 🤝 Contributing
+
+Contributions, bug reports, and feature suggestions are welcome!
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/your-feature-name`)
+3. **Commit** your changes (`git commit -m 'feat: add your feature'`)
+4. **Push** to your branch (`git push origin feature/your-feature-name`)
+5. **Open a Pull Request** describing your changes
+
+Please follow the existing code style — vanilla JS IIFEs, meaningful variable names, and no external frameworks.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 👨‍💻 Author
 
-Developed as an advanced Software Engineering portfolio project showcasing modern frontend architectural principles, clean UI/UX design, and modular Vanilla JavaScript.
+<div align="center">
 
+**Developed by [Your Name]**
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-username)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/your-profile)
+[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=for-the-badge&logo=todoist&logoColor=white)](https://your-portfolio.dev)
+
+_Built as part of a Software Engineering portfolio — demonstrating modern frontend architecture with zero dependencies._
+
+</div>

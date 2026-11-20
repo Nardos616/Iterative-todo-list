@@ -155,7 +155,6 @@
   }
 
   .modal-dialog {
-    max-height: 95vh;
     border-radius: var(--radius-lg);
   }
 
@@ -212,6 +211,21 @@
 
   .priority-toggle-group {
     grid-template-columns: 1fr;
+  }
+
+  /* Ensure form inputs never overflow on tiny screens */
+  .modal-backdrop {
+    padding: 1rem 0.75rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    font-size: 16px; /* Prevents iOS zoom on focus */
   }
 }
 
