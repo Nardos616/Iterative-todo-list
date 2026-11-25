@@ -1,9 +1,4 @@
-/**
- * ============================================================================
- * ITERATIVE TO-DO LIST - MAIN APPLICATION CONTROLLER (js/app.js)
- * Router, navigation coordinator, modal handlers, search bar & keyboard shortcuts
- * ============================================================================
- */
+// Router, navigation coordinator, modal handlers, search bar & keyboard shortcut
 
 window.App = (() => {
   let currentNav = 'dashboard';
